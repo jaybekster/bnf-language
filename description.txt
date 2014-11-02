@@ -1,0 +1,57 @@
+{
+	obj = {};
+	function scope(name, val) {
+		console.log(name, val)
+		if (!val) {
+			console.log(obj)
+			return obj[name];
+		}
+		obj[name] = val;
+
+	}
+}
+
+
+start
+  = block
+
+metka = digits spaces? ":" ?spaces
+
+
+OpearationM = [-+*/^];
+OpeationsA = [];
+
+block = string "\n"? block?
+string = metka _var:Variable spaces? op:additive { scope(_var, op); return _var + " = " + op; }
+
+
+additive
+  = left:multiplicative spaces? "+" spaces? right:additive { return left + right; }
+  / left:multiplicative spaces? "-" spaces? right:additive { return left - right; }
+  / left:multiplicative spaces? "^" spaces? right:additive { return Math.pow(left, right); }
+  / multiplicative
+
+multiplicative
+  = left:primary spaces? "*" spaces? right:multiplicative { return left * right; }
+  / left:primary spaces? "/" spaces? right:multiplicative { return left / right; }
+  / primary
+
+primary
+  = digits:digits { return digits; }
+  / name:VariableName { return scope(name) }
+  / "(" additive:additive ")" { return additive; }
+
+
+
+VariableName = firstLetter:chars diffs:diff* { return firstLetter + diffs.join("") }
+
+Variable = _var:VariableName spaces? '=' {return _var; }
+
+digits = znak:[+-]? chislo:[0-9]+ { return parseInt((znak ? znak : "") + chislo.join(""), 10); }
+
+chars = [а-я]i
+
+diff = [а-я]i
+/[0-9]
+
+spaces = spaces:[ \f\n\r\t\v]* { return " "; }
