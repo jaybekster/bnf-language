@@ -1,27 +1,36 @@
-{
-	obj = {};
-	function scope(name, val) {
-		console.log(name, val)
-		if (!val) {
-			console.log(obj)
-			return obj[name];
-		}
-		obj[name] = val;
+//http://pegjs.majda.cz/
 
-	}
+{
+  obj = {};
+  function scope(name, val) {
+    console.log(name, val)
+    if (!val) {
+      console.log(obj)
+      return obj[name];
+    }
+    obj[name] = val;
+
+  }
 }
 
 
 start
-  = block
+  = "Программа" spaces? Title spaces? ZnakDiff spaces? Block spaces? "Конец программы"
 
-metka = digits spaces? ":" ?spaces
+Title = "Метки" " "*
+
+Znak = [0-9]+[^:] [ \n]*
+/VariableName [ \n]*
+
+ZnakDiff = Znak*
+
+metka = digits":"
 
 
 OpearationM = [-+*/^];
 OpeationsA = [];
 
-block = string "\n"? block?
+Block = string spaces?";" spaces? Block?
 string = metka _var:Variable spaces? op:additive { scope(_var, op); return _var + " = " + op; }
 
 
