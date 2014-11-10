@@ -1,26 +1,39 @@
-//http://pegjs.majda.cz/
-
 {
   obj = {};
   function scope(name, val) {
     console.log(name, val)
     if (!val) {
-      console.log(obj)
       return obj[name];
     }
     obj[name] = val;
 
   }
+
+function clearNull(arr) {
+    var length = arr.length;
+    while (length--) {
+      if (Array.isArray(arr[length])) {
+        clearNull(arr[length]);
+      }
+      if (arr[length] === null || Array.isArray(arr[length]) && !arr[length].length) {
+        arr.splice(length, 1);
+      }
+    }
+    return arr;
+  }
 }
 
-
 start
-  = "Программа" spaces? Title spaces? ZnakDiff spaces? Block spaces? "Конец программы"
+  = Program:(Begin Title ZnakDiff spaces? Blocks spaces? "Конец программы") { return clearNull(Program); }
 
-Title = "Метки" " "*
+Begin = "Программа" spaces? {
+  return 'Программа';
+}
 
-Znak = [0-9]+[^:] [ \n]*
-/VariableName [ \n]*
+Title = "Метки" spaces? { return 'Метки'; }
+
+Znak = metkaName:[0-9]+[^:] [ \n]* { return metkaName.join(""); }
+/metkaName: VariableName [ \n]* { return metkaName; }
 
 ZnakDiff = Znak*
 
@@ -30,7 +43,8 @@ metka = digits":"
 OpearationM = [-+*/^];
 OpeationsA = [];
 
-Block = string spaces?";" spaces? Block?
+Block = spaces? block:string spaces?";" { return block; }
+Blocks = block:Block*
 string = metka _var:Variable spaces? op:additive { scope(_var, op); return _var + " = " + op; }
 
 
@@ -63,4 +77,4 @@ chars = [а-я]i
 diff = [а-я]i
 /[0-9]
 
-spaces = spaces:[ \f\n\r\t\v]* { return " "; }
+spaces = spaces:[ \f\n\r\t\v]* { return null; }
