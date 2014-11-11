@@ -1,3 +1,5 @@
+// http://pegjs.majda.cz/
+
 {
   obj = {};
   function scope(name, val) {
@@ -26,11 +28,11 @@ function clearNull(arr) {
 start
   = Program:(Begin Title ZnakDiff spaces? Blocks spaces? "Конец программы") { return clearNull(Program); }
 
-Begin = "Программа" spaces? {
+Begin "Программа" = "Программа" spaces? {
   return 'Программа';
 }
 
-Title = "Метки" spaces? { return 'Метки'; }
+Title "Метки" = "Метки" spaces? {  return 'Метки'; }
 
 Znak = metkaName:[0-9]+[^:] [ \n]* { return metkaName.join(""); }
 /metkaName: VariableName [ \n]* { return metkaName; }
@@ -48,33 +50,36 @@ Blocks = block:Block*
 string = metka _var:Variable spaces? op:additive { scope(_var, op); return _var + " = " + op; }
 
 
-additive
+additive "additive"
   = left:multiplicative spaces? "+" spaces? right:additive { return left + right; }
   / left:multiplicative spaces? "-" spaces? right:additive { return left - right; }
   / left:multiplicative spaces? "^" spaces? right:additive { return Math.pow(left, right); }
   / multiplicative
 
-multiplicative
+multiplicative "multiplicative"
   = left:primary spaces? "*" spaces? right:multiplicative { return left * right; }
   / left:primary spaces? "/" spaces? right:multiplicative { return left / right; }
   / primary
 
-primary
+primary "primary"
   = digits:digits { return digits; }
   / name:VariableName { return scope(name) }
   / "(" additive:additive ")" { return additive; }
 
 
 
-VariableName = firstLetter:chars diffs:diff* { return firstLetter + diffs.join("") }
+VariableName "VariableName"
+= firstLetter:chars diffs:diff* { return firstLetter + diffs.join("") }
 
-Variable = _var:VariableName spaces? '=' {return _var; }
+Variable "Variable"
+= _var:VariableName spaces? '=' {return _var; }
 
-digits = znak:[+-]? chislo:[0-9]+ { return parseInt((znak ? znak : "") + chislo.join(""), 10); }
+digits "digits"
+= znak:[+-]? chislo:[0-9]+ { return parseInt((znak ? znak : "") + chislo.join(""), 10); }
 
 chars = [а-я]i
 
 diff = [а-я]i
 /[0-9]
 
-spaces = spaces:[ \f\n\r\t\v]* { return null; }
+spaces "Пробелы или отступы" = spaces:[ \n]* { return null; }
