@@ -1,0 +1,14 @@
+html,
+body {
+	font-size: 24px;
+}
+body {
+	background: #c2c2c2;
+}
+
+textarea {
+	background: #cfcfcf;
+	font-size: 24px;
+	width: 75%;
+	height: 15em;
+}
