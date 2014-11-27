@@ -8,7 +8,8 @@ $(function() {
 
 	$('button').on('click', function() {
 		$compiled.html('');
-		var value = $textarea.val().replace(/\s+/g, ' ');
+		// var value = $textarea.val().replace(/\s+/g, ' ');
+		var value = $textarea.val();
 
 
 		try {
@@ -30,19 +31,31 @@ $(function() {
 			}
 
 	        switch (err.expected[0].description) {
-	          case 'Программа':
+				case 'Программа':
+					str = 'Программа должна начинатьcя со слова "Программа"';
+					break;
+				case 'Метки':
+					str = 'Не найдено слово "Метки"';
+					break;
+		    	case '":"':
+		    		str = 'Вы неправильно написали метку'
+		    		if (err.found === ' ') {
+		    			str = 'Метка и знак двоеточия должны быть написано слитно';
+		    		}
+	    			break;
+    			case 'Variable':
+    				if (value.substr(err.offset -1, 1) === ':') {
+    					str = 'Метка и знак двоеточия должны быть написано слитно';
+    				}
+    				break;
+				case 'end of input':
+					str = 'После выражения "Конец программы" не должно ничего следовать';
 
-	            str = 'Язык должен начинатьcя со слова "Программа"';
-	            break;
-	          case 'Метки':
-	            str = 'Не найдено слово "Метки"';
-	            break;
-            	case '":"':
-            		str = 'Вы неправильно написали метку'
-            		if (err.found === ' ') {
-            			str = 'Метка и знак двоеточия должны быть написано слитно';
-            		}
 	        }
+
+        	if (err.expected[0].value === 'Конец программы') {
+    			str = 'Программа должна оканчиваться выражение "Конец программы"';
+        	}
 
 	        if (err.expected[2] && err.expected[2].description === 'Метка') {
 	        	str = 'вы неправильно написали метку в перечислении меток';
