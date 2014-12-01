@@ -4,6 +4,7 @@ body {
 }
 body {
 	background: #c2c2c2;
+	position: relative;
 }
 
 textarea {
@@ -11,4 +12,20 @@ textarea {
 	font-size: 24px;
 	width: 75%;
 	height: 15em;
+}
+#help {
+	background: grey;
+	cursor: pointer;
+	max-height: 10px;
+	margin-bottom: 10px;
+	color: transparent;
+	transition: all 0.5s linear;
+}
+#help:hover {
+	min-height: 50px;
+	opacity: 0.7;
+}
+#help.opened {
+	color: white;
+	max-height: 500px;
 }

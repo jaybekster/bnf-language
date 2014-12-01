@@ -6,11 +6,19 @@ $(function() {
 
 	// $textarea.val('Программа Метки фыфы12 1231 132 13 13 13:фыф12ы = 13 + 113; 13:фыфы = фыфы * 30 * (5+1);Конец программы')
 
+	$('#help').on('click', function() {
+		$(this).toggleClass('opened');
+	})
+
 	$('button').on('click', function() {
 		$compiled.html('');
 		// var value = $textarea.val().replace(/\s+/g, ' ');
-		var value = $textarea.val();
+		var value = $textarea.val(),
+			i;
 
+		for (i in parser.memory) {
+			if (parser.memory.hasOwnProperty(i)) delete parser.memory[i];
+		}
 
 		try {
 			parsed = parser.parse($textarea.val());
@@ -44,8 +52,10 @@ $(function() {
 		    		}
 	    			break;
     			case 'Variable':
-    				if (value.substr(err.offset -1, 1) === ':') {
+    				if (value.substr(err.offset -1, 1) === ':' && value.substr(err.offset, 1) === ' ') {
     					str = 'Метка и знак двоеточия должны быть написано слитно';
+    				} else {
+    					str = 'Неправильно написана метка';
     				}
     				break;
 				case 'end of input':
