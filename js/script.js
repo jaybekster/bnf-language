@@ -70,8 +70,11 @@ $(function() {
     			if (/\d*/.test(value.substr(err.offset -1, 1))) {
     				str = 'Неправильное написание цисла: в нём не может находится нечисловой символ';
     			}
-    			if (['-', '+', '*', '/', '^'].indexOf(err.found) !== -1) {
+    			if (['-', '+', '*', '/', '^', '(', ')'].indexOf(err.found) !== -1) {
 					str = 'Переменная должна начинаться с символа кириллического алфавита';
+					if ( getNextSymbol(value, err.offset+1) === '(' ) {
+						str = 'Мудила, скобку то закрой или убери к хуям';
+					}
     			}
         	}
 
@@ -87,5 +90,17 @@ $(function() {
 		}
 
 	});
+
+	function getNextSymbol(string, index) {
+		var string = string.substr(index);
+		if (!string) {
+			return false;
+		}
+		if (string[0] == " ") {
+			return getNextSymbol(string, 1);
+		} else {
+			return string[0];
+		}
+	}
 
 });
